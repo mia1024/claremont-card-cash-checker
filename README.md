@@ -20,3 +20,10 @@ Finally, run the script by
 ```bash
 python3 check.py
 ```
+
+## Sample Output
+```
+Flex: $2.50
+Claremont Cash: $26.50
+Swipes: 4
+```
