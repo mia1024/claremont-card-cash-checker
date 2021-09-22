@@ -51,7 +51,7 @@ r = s.get("https://cards.services.claremont.edu/index.php?cid=35")
 res = re.findall(r'<span class="sr-only">Current Balance (.+?)</span>', r.text)
 
 print("Flex: " + res[0])
-print("Claremont Cash" + res[1])
-print("Swipes" + res[2])
+print("Claremont Cash: " + res[1])
+print("Swipes: " + res[2])
 
 s.get("https://cards.services.claremont.edu/logout.php?cid=35")
