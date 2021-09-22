@@ -4,11 +4,13 @@ DEBUG = False
 
 import time, requests, sys, re
 
-
 def log(s):
     if DEBUG:
         print(s, file=sys.stderr)
 
+if "YOUR" in STUDENT_ID or "YOUR" in PASSWORD:
+    print("Please edit this file and put in your ID and password  (ノ°Д°）ノ︵ ┻━┻")
+    sys.exit(1)
 
 s = requests.Session()
 s.headers["User-Agent"] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.7.5) Gecko/20060127 Netscape/8.1'
