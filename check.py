@@ -50,7 +50,7 @@ while True:
 
 log("fetching cash")
 r = s.get("https://cards.services.claremont.edu/index.php?cid=35")
-res = re.findall(r'<span class="sr-only">Current Balance (.+?)</span>', r.text)
+res = re.findall(r'<span class="sr-only">Current Balance (.+?)</span>', r.text, re.I)
 
 print("Flex: " + res[0])
 print("Claremont Cash: " + res[1])
