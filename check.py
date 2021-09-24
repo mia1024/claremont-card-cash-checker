@@ -40,6 +40,7 @@ log("success")
 
 log("Waiting server")
 s.get("https://cards.services.claremont.edu/login.php?cid=35&fullscreen=1")
+time.sleep(0.1)
 while True:
     r = s.get("https://cards.services.claremont.edu/login-check.php?skey=" + skey)
     if "<message>0</message>" in r.text:
