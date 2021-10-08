@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
     <title>
-        CCCCCC
+        Claremont Card Cash Checker
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>-->
+    <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"
             integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u"
             crossorigin="anonymous"></script>
     <script>
+        function dismissConsent() {
+            localStorage.setItem("consented", "true")
+            document.body.classList.add("consented")
+        }
+
         function doCheck() { // this is textbook example of bad function name :)
             let username = document.getElementById("username").value
             let password = document.getElementById("password").value
@@ -19,12 +25,32 @@
             document.getElementById("check-button").classList.add("disabled")
         }
 
+        function displayResult(res) {
+
+            let l = document.createElement("ul")
+            for (let key in res) {
+                let li = document.createElement("li")
+                li.innerText = `${key}: ${res[key]}`
+                l.appendChild(li)
+            }
+            let r = document.getElementById("result")
+            r.classList.remove("show-spinner")
+            r.appendChild(l)
+
+            let b = document.createElement("button")
+            b.className = "btn btn-outline-secondary"
+            b.innerText = "Clear saved credentials"
+
+            b.onclick = function () {
+                localStorage.clear()
+                location.reload()
+            }
+            r.appendChild(b)
+        }
 
         async function check(username, password) {
-            let s = document.createElement("div")
-            s.classList.add("spinner-border")
-            s.classList.add("text-primary")
-            document.getElementById("result").appendChild(s)
+
+            document.getElementById("result").classList.add("show-spinner")
 
             let res = await fetch("/", {
                 method: "POST",
@@ -34,44 +60,29 @@
             })
 
             if (res.status === 200) {
+                let j = await res.json()
                 document.body.classList.add("login-valid")
                 document.body.classList.remove("invalid-login")
-                let j = await res.json()
-                let l = document.createElement("ul")
-                for (let key in j) {
-                    let li = document.createElement("li")
-                    li.innerText = `${key}: ${j[key]}`
-                    l.appendChild(li)
-                }
-                let r = document.getElementById("result")
-                r.innerHTML = ""
-                r.appendChild(l)
 
-                let b = document.createElement("button")
-                b.className = "btn btn-outline-secondary"
-                b.innerText = "Clear saved credentials"
-
-                b.onclick = function () {
-                    localStorage.clear()
-                    document.body.classList.remove("login-valid")
-                    document.body.classList.remove("invalid-login")
-                    r.removeChild(b)
-                }
-
-                r.appendChild(b)
+                displayResult(j)
 
                 localStorage.setItem("username", username)
                 localStorage.setItem("password", password)
                 localStorage.setItem("validLogin", "true")
+                localStorage.setItem("lastChecked", new Date().getTime())
+                localStorage.setItem("lastResult", JSON.stringify(j))
+
             } else if (res.status === 401) {
+                document.body.classList.remove("login-valid")
                 document.body.classList.add("invalid-login")
+                document.getElementById("result").classList.remove("show-spinner")
             }
 
             document.getElementById("check-button").classList.remove("disabled")
         }
     </script>
     <style>
-        .login-valid #password-form {
+        .login-valid.consented #password-form {
             display: none;
         }
 
@@ -82,16 +93,103 @@
         .invalid-login #invalid-login {
             display: block;
         }
+
+        #password-form, #result {
+            display: none;
+        }
+
+        .consented #password-form {
+            display: flex;
+        }
+
+        .consented #result{
+            display: block;
+        }
+
+        .consented #consent {
+            display: none;
+        }
+
+        #spinner {
+            display: none;
+        }
+
+        #result.show-spinner #spinner {
+            display: block;
+        }
+        @media (display-mode: standalone) {
+            #pwa-install{
+                display: none;
+            }
+        }
+
     </style>
 </head>
 
 <body class="login-valid">
+
 <div class="container">
     <div class="row justify-content-around">
-        Completely Convoluted Claremont Card Cash Checker (CCCCCC)
+        <h2>
+            Completely Convoluted Claremont Card Cash Checker (C6)
+        </h2>
     </div>
+    <div class="row justify-content-around" id="consent">
+        <div style="margin-top:1em" class="col-10 col-sm-10 col-md-8">
+            This app
+            <ul>
+                <li>
+                    checks your flex, claremont cash, meal swipes for you
+                </li>
+                <li>
+                    saves your login credentials on your device
+                </li>
+                <li>
+                    sends your login credentials to a server when needed
+                </li>
+                <li>
+                    does not provide support or warranty of any kind (although you are welcome to file bug reports)
+                </li>
+
+                <li>
+                    is <a href="https://github.com/mia1024/claremont-card-cash-checker/tree/web">open source</a>
+                </li>
+            </ul>
+            The server
+            <ul>
+                <li>
+                    does not save or otherwise record your login credentials on the disk
+                </li>
+                <li>
+                    erases your login credentials from memory once your request is completed
+                </li>
+                <li>
+                    may record your IP address in debug log
+                </li>
+                <li>
+                    does not set or read cookies (however, you might get cookies from the hosting provider Cloudflare)
+                </li>
+            </ul>
+            By continuing, you agree that
+            <ul>
+                <li>
+                    you understand and willing to accept any and all risks associated with
+                    sending your login credentials to an external server
+                </li>
+                <li>
+                    in the event of any compromise of your personal data due to this particular
+                    app, the app's author(s) and maintainer(s) are not liable for any damage as a result
+                </li>
+            </ul>
+            <div style="display: flex;justify-content: space-between">
+                <button class="btn btn-outline-success" onclick="dismissConsent()"> Agree and continue</button>
+                <button class="btn btn-outline-danger" onclick="location.href='about:blank'"> Decline and exit</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row justify-content-around" id="password-form">
-        <form class="col-8 col-sm-8 col-md-6">
+        <form class="col-10 col-sm-8 col-md-6">
             <div>
                 <div class="form-group">
                     <label for="username">Student ID</label>
@@ -114,23 +212,67 @@
     </div>
     <div class="row justify-content-around">
         <div id="result" class="col-8 col-sm-8 col-md-6">
-
+            <div class="spinner-border text-primary" id="spinner"></div>
         </div>
+    </div>
+
+    <div id="pwa-install" class="row justify-content-around visually-hidden" style="margin-top:3em">
+        <button class="btn btn-outline-success">Install as standalone app</button>
     </div>
 </div>
 
 <script>
+    let installPrompt = undefined
+
+    if (localStorage.getItem("consented") === "true") {
+        document.body.classList.add("consented")
+    }
+
     if (localStorage.getItem("validLogin") === "true") {
-        let username = localStorage.getItem("username")
-        let password = localStorage.getItem("password")
-        check(username, password).catch(_ => {
-            console.error(_)
-            document.body.classList.remove("login-valid")
-            document.body.classList.add("invalid-login")
-        })
+        let t = new Date(parseInt(localStorage.getItem("lastChecked")))
+        if (new Date().getTime() - t.getTime() < 30 * 60 * 1000) {
+            let cacheInfoBox = document.createElement("div")
+            cacheInfoBox.className = "alert alert-info"
+            cacheInfoBox.innerText = "Using cached result from " + (t =>
+                    t < 60 ? Math.round(t) + " seconds ago" : Math.round(t / 60) + " minutes ago"
+            )((new Date().getTime() - t.getTime()) / 1000)
+            document.getElementById("result").appendChild(cacheInfoBox)
+
+            let b = document.createElement("button")
+            b.className = "btn btn-outline-warning"
+            b.style.marginBottom = "2em"
+            b.onclick = () => {
+                localStorage.removeItem("lastChecked")
+                location.reload()
+            }
+            b.innerText = "Force re-check now"
+            // d.appendChild(b)
+            document.getElementById("result").appendChild(b)
+            displayResult(JSON.parse(localStorage.getItem("lastResult")))
+
+        } else {
+            let username = localStorage.getItem("username")
+            let password = localStorage.getItem("password")
+            check(username, password).catch(e => {
+                console.error(e)
+                document.body.classList.remove("login-valid")
+                document.body.classList.add("invalid-login")
+            })
+        }
+
     } else {
         document.body.classList.remove("login-valid")
     }
+    window.onload = () => navigator.serviceWorker.register('/sw.js')
+
+    window.addEventListener("beforeinstallprompt", e => {
+        e.preventDefault()
+        installPrompt = e
+        console.log("PWA install detected")
+        if (localStorage.getItem("consented") === "true") {
+            document.getElementById("pwa-install").classList.remove("visually-hidden")
+        }
+    })
 </script>
 </body>
 </html>
