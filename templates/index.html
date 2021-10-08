@@ -1,0 +1,136 @@
+<!docTYPE html>
+<html lang="en">
+<head>
+    <title>
+        CCCCCC
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"
+            integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u"
+            crossorigin="anonymous"></script>
+    <script>
+        function doCheck() { // this is textbook example of bad function name :)
+            let username = document.getElementById("username").value
+            let password = document.getElementById("password").value
+            check(username, password)
+            document.getElementById("check-button").classList.add("disabled")
+        }
+
+
+        async function check(username, password) {
+            let s = document.createElement("div")
+            s.classList.add("spinner-border")
+            s.classList.add("text-primary")
+            document.getElementById("result").appendChild(s)
+
+            let res = await fetch("/", {
+                method: "POST",
+                credentials: "omit",
+                body: JSON.stringify({username, password,}),
+                headers: {"Content-Type": "application/json"}
+            })
+
+            if (res.status === 200) {
+                document.body.classList.add("login-valid")
+                document.body.classList.remove("invalid-login")
+                let j = await res.json()
+                let l = document.createElement("ul")
+                for (let key in j) {
+                    let li = document.createElement("li")
+                    li.innerText = `${key}: ${j[key]}`
+                    l.appendChild(li)
+                }
+                let r = document.getElementById("result")
+                r.innerHTML = ""
+                r.appendChild(l)
+
+                let b = document.createElement("button")
+                b.className = "btn btn-outline-secondary"
+                b.innerText = "Clear saved credentials"
+
+                b.onclick = function () {
+                    localStorage.clear()
+                    document.body.classList.remove("login-valid")
+                    document.body.classList.remove("invalid-login")
+                    r.removeChild(b)
+                }
+
+                r.appendChild(b)
+
+                localStorage.setItem("username", username)
+                localStorage.setItem("password", password)
+                localStorage.setItem("validLogin", "true")
+            } else if (res.status === 401) {
+                document.body.classList.add("invalid-login")
+            }
+
+            document.getElementById("check-button").classList.remove("disabled")
+        }
+    </script>
+    <style>
+        .login-valid #password-form {
+            display: none;
+        }
+
+        #invalid-login {
+            display: none;
+        }
+
+        .invalid-login #invalid-login {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="login-valid">
+<div class="container">
+    <div class="row justify-content-around">
+        Completely Convoluted Claremont Card Cash Checker (CCCCCC)
+    </div>
+    <div class="row justify-content-around" id="password-form">
+        <form class="col-8 col-sm-8 col-md-6">
+            <div>
+                <div class="form-group">
+                    <label for="username">Student ID</label>
+                    <input type="text" name="username" id="username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="text" name="password" id="password" class="form-control">
+                </div>
+                <div class="alert alert-danger" style="margin-top:0.5em" id="invalid-login">Invalid Login. Have you
+                    created an account on the
+                    <a href="https://cards.cuc.claremont.edu/">TCCS website</a>? (Note: this is not your usual school
+                    password)
+                </div>
+                <button type="button" onclick="doCheck()" id="check-button" class="btn btn-outline-primary"
+                        style="margin-top:0.5em">Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="row justify-content-around">
+        <div id="result" class="col-8 col-sm-8 col-md-6">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    if (localStorage.getItem("validLogin") === "true") {
+        let username = localStorage.getItem("username")
+        let password = localStorage.getItem("password")
+        check(username, password).catch(_ => {
+            console.error(_)
+            document.body.classList.remove("login-valid")
+            document.body.classList.add("invalid-login")
+        })
+    } else {
+        document.body.classList.remove("login-valid")
+    }
+</script>
+</body>
+</html>
