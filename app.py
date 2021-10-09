@@ -35,7 +35,7 @@ def check(username, password):
             break
     
     r = s.get("https://cards.services.claremont.edu/index.php?cid=35")
-    res = re.findall(r'<span.*?>Current Balance (.+?)</span>', r.text)
+    res = re.findall(r'<span.*?>Current Balance (.+?)</span>', r.text, re.I)
     s.get("https://cards.services.claremont.edu/logout.php?cid=35")
     return res
 
