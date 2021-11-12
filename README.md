@@ -4,7 +4,7 @@ Web app available at [https://c6.mia.wang](https://c6.mia.wang). This app confor
 Progressive Web App (PWA) requirement and can be installed as a standalone app by the 
 respective browser. 
 
-![screenshot](screenshot.jpg)
+<img src="screenshot.jpg" width=50% />
 
 # Rationale 
 
