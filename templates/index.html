@@ -84,12 +84,27 @@
                 document.body.classList.remove("login-valid")
                 document.body.classList.add("invalid-login")
                 document.getElementById("result").classList.remove("show-spinner")
+            } else {
+                document.getElementById("result").classList.remove("show-spinner")
+                document.getElementById("result").innerHTML=`
+                <div class="alert alert-danger">
+                <p>Failed to parse response but login was successful. Please check if the service is up at <a href="https://cards.services.claremont.edu" target="_blank">
+                TCCS website
+                </a>. If so, please file a bug report on <a href="https://github.com/mia1024/claremont-card-cash-checker">GitHub</a>. </p>
+                </div>
+                `
             }
 
             document.getElementById("check-button").classList.remove("disabled")
         }
     </script>
     <style>
+        body{
+            padding-top:1em;
+            min-height: 100vh;
+            width: 100vw;
+        }
+
         .login-valid.consented #password-form {
             display: none;
         }
@@ -113,6 +128,20 @@
         .consented #result{
             display: block;
         }
+        #attribution{
+            display: none;
+            justify-content: flex-end;
+            color: #8f8f8f;
+            margin-top: 2em;
+            text-align: center;
+        }
+        #attribution a{
+            color:inherit;
+            padding-left: 0;
+        }
+        .consented #attribution{
+            display: block;
+        }
 
         .consented #consent {
             display: none;
@@ -120,6 +149,11 @@
 
         #spinner {
             display: none;
+        }
+
+        #pwa-install{
+            margin-left: 1.5em;
+            margin-right: 1.5em;
         }
 
         #result.show-spinner #spinner {
@@ -138,7 +172,7 @@
 
 <div class="container">
     <div class="row justify-content-around">
-        <h2>
+        <h2 class="col-10 col-sm-8 col-md-6">
             Completely Convoluted Claremont Card Cash Checker (C6)
         </h2>
     </div>
@@ -209,7 +243,7 @@
                 </div>
                 <div class="alert alert-danger" style="margin-top:0.5em" id="invalid-login">Invalid Login. Have you
                     created an account on the
-                    <a href="https://cards.services.claremont.edu">TCCS website</a>? (Note: this is not your usual school
+                    <a href="https://cards.services.claremont.edu" target="_blank">TCCS website</a>? (Note: this is not your usual school
                     password)
                 </div>
                 <button type="button" onclick="doCheck()" id="check-button" class="btn btn-outline-primary"
@@ -224,8 +258,16 @@
         </div>
     </div>
 
+        <div id="attribution" class="row justify-flex-end">
+            Developed by Mia Celeste | <a href="https://github.com/mia1024/claremont-card-cash-checker" target="_blank">View on GitHub</a>
+        </div>
+
+
     <div id="pwa-install" class="row justify-content-around visually-hidden" style="margin-top:3em">
-        <button class="btn btn-outline-success" onclick="installPrompt.prompt()">Install as standalone app</button>
+        <button class="btn btn-outline-success col-10 col-sm-8 col-md-6" onclick="installPrompt.prompt()">Install as standalone app</button>
+    </div>
+    <div>
+
     </div>
 </div>
 
