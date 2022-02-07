@@ -51,7 +51,7 @@ def index():
             return jsonify({
                 "Flex": res[0],
                 "Cash": res[1],
-                "Swipe": res[2] if len(res)==2 else "N/A"
+                "Swipe": "N/A" if len(res)==2 else res[2]
             })
         except LoginFailed:
             return "", 401
