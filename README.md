@@ -1,6 +1,6 @@
 # Completely Convoluted Claremont Card Cash Checker
 
-Web app available at [https://c6.mia.wang](https://c6.mia.wang). This app conforms to the 
+Web app available at [https://c6.mia1024.io](https://c6.mia1024.io). This app conforms to the 
 Progressive Web App (PWA) requirement and can be installed as a standalone app by the 
 respective browser. 
 
