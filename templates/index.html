@@ -88,7 +88,7 @@
                 document.getElementById("result").classList.remove("show-spinner")
                 document.getElementById("result").innerHTML=`
                 <div class="alert alert-danger">
-                <p>Failed to parse response but login was successful. Please check if the service is up at <a href="https://cards.services.claremont.edu" target="_blank">
+                <p>Failed to parse response but login was successful. Please check if the service is up at <a href="https://cards.services.claremont.edu/login.php?cid=35" target="_blank">
                 TCCS website
                 </a>. If so, please file a bug report on <a href="https://github.com/mia1024/claremont-card-cash-checker">GitHub</a> with a screenshot of your page and its source code. </p>
                 </div>
@@ -243,12 +243,15 @@
                 </div>
                 <div class="alert alert-danger" style="margin-top:0.5em" id="invalid-login">Invalid Login. Have you
                     created an account on the
-                    <a href="https://cards.services.claremont.edu" target="_blank">TCCS website</a>? (Note: this is not your usual school
+                    <a href="https://cards.services.claremont.edu/login.php?cid=35" target="_blank">TCCS website</a>? (Note: this is not your usual school
                     password)
                 </div>
-                <button type="button" onclick="doCheck()" id="check-button" class="btn btn-outline-primary"
-                        style="margin-top:0.5em">Submit
-                </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="button" onclick="doCheck()" id="check-button" class="btn btn-outline-primary"
+                            style="margin-top:0.5em">Submit
+                    </button>
+                    <a href="https://services.jsatech.com/mod_auth/recall.php?cid=35" target="_blank">Forgot password?</a>
+                </div>
             </div>
         </form>
     </div>
